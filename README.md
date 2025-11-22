@@ -340,14 +340,21 @@ queue.offer(page);
 After completing the lab, answer these questions:
 
 1. **Belady's Anomaly**: In Test Case 2, why does adding a 4th frame cause MORE page faults than having only 3 frames? This seems counterintuitive.
+   - Adding a 4th frame causes more page faults because FIFO removes pages based only on age, not usage. The larger memory changes the eviction order and causes FIFO to throw out pages that will soon be needed. This leads to more faults, which is Belady’s Anomaly.
 
 2. **Data Structures**: Why do we need both a Queue AND a Set? What would happen if we only used a Queue?
+   - We use a Queue to track the oldest page (FIFO order) and a Set to check quickly if a page is already in memory. If we only used a Queue, checking membership would be slow and we could accidentally insert duplicates.
 
 3. **Performance**: If memory access takes 200 nanoseconds and a page fault takes 8 milliseconds, calculate the effective access time for Test Case 1 with 3 frames. (Use the formula from the lesson)
+   - Fault rate = 15/20 = 0.75
+     EAT = (1 − 0.75)(200ns) + (0.75)(8,000,000ns)
+     EAT ≈ 6,000,050 ns = 6.0 ms
 
 4. **Pattern Analysis**: Which test case had the worst performance with 3 frames? Why did that particular access pattern cause so many page faults?
+   - Test Case 3 performed worst (100% faults) because it cycles through 4 pages but only 3 frames are available. One page is always missing, causing a fault every time.
 
-5. **Real World**: Based on your observations, why do you think modern operating systems don't use pure FIFO for page replacement?
+6. **Real World**: Based on your observations, why do you think modern operating systems don't use pure FIFO for page replacement?
+   - FIFO ignores how recently pages were used, makes poor eviction choices, and can show Belady’s Anomaly. Modern OSes use smarter algorithms like LRU or Clock to avoid these problems. 
 
 ## What You're Learning
 
